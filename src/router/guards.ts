@@ -1,6 +1,5 @@
 import { storeToRefs } from 'pinia';
 import { NavigationGuard, NavigationHookAfter } from 'vue-router';
-import http from '@/store/http';
 import { useAccountStore, useLoadingStore } from '@/store';
 import { useAuthStore } from '@/plugins';
 import NProgress from 'nprogress';
@@ -16,7 +15,7 @@ interface NaviGuard {
 
 const loginGuard: NavigationGuard = function (to, from) {
   const account = useAccountStore();
-  if (!http.checkAuthorization() && !/^\/(login|home)?$/.test(to.fullPath)) {
+  if (!account.token && !/^\/(login|home)?$/.test(to.fullPath)) {
     return '/login';
     // account.setLogged(false);
   }

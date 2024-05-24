@@ -27,9 +27,11 @@ export default ({ command, mode }) => {
   // 获取环境变量
   const env = loadEnv(mode, process.cwd());
   console.log(mode);
+  console.log('API URL:', env.VITE_API_URL);  // 打印 API URL 确认其值
 
   return defineConfig({
     server: {
+      port: 3030,
       proxy: {
         '/api': {
           target: env.VITE_API_URL,
@@ -40,7 +42,6 @@ export default ({ command, mode }) => {
       },
       hmr: true,
     },
-
     resolve: {
       alias: {
         '@': path.resolve(__dirname, 'src'),

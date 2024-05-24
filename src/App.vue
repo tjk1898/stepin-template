@@ -1,9 +1,10 @@
 <template>
+
   <a-config-provider :getPopupContainer="getPopupContainer">
     <ThemeProvider is-root v-bind="themeConfig" :apply-style="false">
       <stepin-view
-        system-name="Stepin"
-        logo-src="@/assets/vite.svg"
+        system-name="Hehe"
+        logo-src="@/assets/vue.svg"
         :class="`${contentClass}`"
         :user="user"
         :navMode="navigation"
@@ -31,38 +32,48 @@
 </template>
 
 <script lang="ts" setup>
-  import { reactive, ref } from 'vue';
+  import { computed, onBeforeMount, ref } from 'vue';
   import { useRouter } from 'vue-router';
-  import { useAccountStore, useMenuStore, useSettingStore, storeToRefs } from '@/store';
+  import { storeToRefs, useAccountStore, useMenuStore, useSettingStore } from '@/store';
   import avatar from '@/assets/avatar.png';
-  import { PageFooter, HeaderActions } from '@/components/layout';
+  import { HeaderActions, PageFooter } from '@/components/layout';
   import Setting from './components/setting';
   import { LoginModal } from '@/pages/login';
   import { configTheme, themeList } from '@/theme';
   import { ThemeProvider } from 'stepin';
-  import { computed } from 'vue';
+  import { useDashboardStore } from '@/store/dashboard';
 
   const { logout, profile } = useAccountStore();
-
-  // 获取个人信息
-  profile().then((response) => {
-    const { account } = response;
-    user.name = account.username;
-    // user.avatar = account.avatar;
-  });
-
-  const showSetting = ref(false);
-  const router = useRouter();
-
-  useMenuStore().getMenuList();
 
   const { navigation, useTabs, theme, contentClass } = storeToRefs(useSettingStore());
   const themeConfig = computed(() => themeList.find((item) => item.key === theme.value)?.config ?? {});
 
-  const user = reactive({
-    name: 'admin',
-    avatar: avatar,
-    menuList: [
+  const showSetting = ref(false);
+  const router = useRouter();
+
+  const accountStore = useAccountStore();
+  const menuStore = useMenuStore();
+  // const dashboardStore = useDashboardStore();
+
+  // 使用计算属性定义用户对象，以确保响应式更新
+  const user = computed(() => ({
+    name: accountStore.account?.username || '',
+    avatar: accountStore.account?.avatar || avatar,
+    menuList: [],
+  }));
+
+  async function initialize() {
+
+    // 1. 获取路由
+    await menuStore.getMenuList();
+
+    // 2. 获取Dashboard信息
+    // if (accountStore.logged) {
+    //   dashboardStore.initializeStore();
+    // }
+
+    // 3. 定义user
+    user.value.menuList = [
       { title: '个人中心', key: 'personal', icon: 'UserOutlined', onClick: () => router.push('/profile') },
       { title: '设置', key: 'setting', icon: 'SettingOutlined', onClick: () => (showSetting.value = true) },
       { type: 'divider' },
@@ -70,9 +81,14 @@
         title: '退出登录',
         key: 'logout',
         icon: 'LogoutOutlined',
-        onClick: () => logout().then(() => router.push('/login')),
+        onClick: () => logout(),
       },
-    ],
+    ];
+  }
+
+  // 4. 在组件挂载前初始化
+  onBeforeMount(() => {
+    initialize();
   });
 
   function getPopupContainer() {
@@ -115,13 +131,16 @@
     height: 100vh;
     overflow-y: hidden;
   }
+
   .stepin-img-checkbox {
-    @apply transition-transform;
+  @apply transition-transform;
+
     &:hover {
-      @apply scale-105 ~"-translate-y-[2px]";
+    @apply scale-105 ~ "-translate-y-[2px]";
     }
+
     img {
-      @apply shadow-low rounded-md transition-transform;
+    @apply shadow-low rounded-md transition-transform;
     }
   }
 </style>

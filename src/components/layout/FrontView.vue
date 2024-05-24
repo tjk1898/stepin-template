@@ -3,15 +3,15 @@
   import { onMounted } from 'vue';
   import { ThemeProvider, alert } from 'stepin';
 
-  onMounted(() => {
-    alert.info(
-      `<div class="text-text">
-        Stepin is a fast, light framework to Vue3 – try it out today with the
-        <span class="underline">Stepin Template Beta</span>.
-      </div>`,
-      { renderRaw: true, duration: -1 }
-    );
-  });
+  // onMounted(() => {
+  //   alert.info(
+  //     `<div class="text-text">
+  //       Stepin is a fast, light framework to Vue3 – try it out today with the
+  //       <span class="underline">Stepin Template Beta</span>.
+  //     </div>`,
+  //     { renderRaw: true, duration: -1 }
+  //   );
+  // });
 
   const navList = [
     {

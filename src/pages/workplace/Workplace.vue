@@ -4,16 +4,19 @@
       <div class="flex items-center">
         <img src="@/assets/avatar/face-1.jpg" class="w-16 h-16 rounded-full" />
         <div class="ml-base">
-          <div class="text-title font-bold text-lg">上午好，Jacob，欢迎回来</div>
-          <div class="text-subtext font-bold text-sm">CEO / Co-Founder</div>
+          <div class="text-title font-bold text-lg">{{timeOfDay}}，{{account.username}}，欢迎回来</div>
+          <div class="text-subtext font-bold text-sm">{{role}} / {{account.username}} </div>
         </div>
       </div>
       <div class="flex items-start">
-        <a-statistic class="w-20" :valueStyle="{ fontWeight: 500 }" title="项目" value="8"></a-statistic>
-        <a-statistic class="w-20" :valueStyle="{ fontWeight: 500 }" title="订单" value="23"></a-statistic>
+        <a-statistic class="w-20" :valueStyle="{ fontWeight: 500 }" title="待接单" :value="orderData.waitingOrders"></a-statistic>
+        <a-statistic class="w-20" :valueStyle="{ fontWeight: 500 }" title="待派送" :value="orderData.deliveredOrders"></a-statistic>
+        <a-statistic class="w-20" :valueStyle="{ fontWeight: 500 }" title="已完成" :value="orderData.completedOrders"></a-statistic>
+        <a-statistic class="w-20" :valueStyle="{ fontWeight: 500 }" title="已取消" :value="orderData.cancelledOrders"></a-statistic>
+        <a-statistic class="w-20" :valueStyle="{ fontWeight: 500 }" title="全部订单" :value="orderData.allOrders"></a-statistic>
         <a-statistic class="w-20" :valueStyle="{ fontWeight: 500 }" title="销售额">
           <template #formatter>
-            <div><span class="text-base">￥</span>2,300</div>
+            <div><span class="text-base">￥</span>{{turnover}}</div>
           </template>
         </a-statistic>
       </div>
@@ -47,7 +50,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { reactive } from 'vue';
+  import { computed, onBeforeMount, reactive, ref } from 'vue';
   import MiniStatisticCard from '@/components/statistic/MiniStatisticCard.vue';
   import ActiveUsers from './ActiveUsers.vue';
   import SalesOverview from './SalesOverview.vue';
@@ -55,8 +58,36 @@
   import OrderHistory from './OrderHistory.vue';
   import AboutUs from './AboutUs.vue';
   import { useUnbounded } from '@/utils/useTheme';
+  import { useAccountStore } from '@/store';
+  import { getTimeOfDay } from '@/utils/time'
+  import { useDashboardStore } from '@/store/dashboard';
+
 
   useUnbounded();
+  const dashboardStore = useDashboardStore()
+
+  const {account, role } = useAccountStore()
+
+  onBeforeMount(()=>{
+    console.log("加载页面")
+    dashboardStore.initializeStore()
+  })
+
+
+  const orderData = computed(() => dashboardStore.orderData);
+
+  // const {turnover, orderCompletionRate, validOrderCount, unitPrice, newUsers} = dashboardStore.businessData
+  const businessData = computed(() => dashboardStore.businessData);
+  const turnover = computed(() => businessData.value.turnover);
+  const orderCompletionRate = computed(() => businessData.value.orderCompletionRate);
+  const validOrderCount = computed(() => businessData.value.validOrderCount);
+  const unitPrice = computed(() => businessData.value.unitPrice);
+  const newUsers = computed(() => businessData.value.newUsers);
+
+
+
+  const timeOfDay = computed(() => getTimeOfDay())
+
 
   const statisticList = reactive([
     {

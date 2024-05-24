@@ -1,5 +1,6 @@
 import { defineStore, storeToRefs } from 'pinia';
 import http from './http';
+import { getMenusByEmployeeId } from '@/api/menu'
 import { ref, watch } from 'vue';
 import { Response } from '@/types';
 import { RouteOption } from '@/router/interface';
@@ -8,7 +9,7 @@ import { useSettingStore } from './setting';
 import { RouteMeta, RouteRecordRaw } from 'vue-router';
 import { useAuthStore } from '@/plugins';
 import router from '@/router';
-import { useLoadingStore } from '@/store';
+import { useAccountStore, useLoadingStore } from '@/store';
 
 export interface MenuProps {
   id?: number;
@@ -117,18 +118,37 @@ export const useMenuStore = defineStore('menu', () => {
   watch(filterMenu, checkMenuPermission);
 
   async function getMenuList() {
+    const accountStore = useAccountStore();
     const { setPageLoading } = useLoadingStore();
     setPageLoading(true);
-    return http
-      .request<MenuProps[], Response<MenuProps[]>>('/menu', 'GET')
-      .then((res) => {
-        const { data } = res;
-        menuList.value = data;
-        addRoutes(toRoutes(data));
-        checkMenuPermission();
-        return data;
-      })
-      .finally(() => setPageLoading(false));
+
+    try {
+      const id = accountStore.account.id;
+      const res = await getMenusByEmployeeId(id);
+      const { data } = res;
+      menuList.value = processMenuData(data);
+      addRoutes(toRoutes(menuList.value));
+      checkMenuPermission();
+      return data;
+    } finally {
+      setPageLoading(false);
+    }
+  }
+
+  function processMenuData(data){
+    const menuMap = data.reduce((p, c) => {
+      p[c.name] = c;
+      return p;
+    }, {});
+    data.forEach((menu) => {
+      menu.renderMenu = !!menu.renderMenu;
+      if (menu.parent) {
+        const parent = menuMap[menu.parent];
+        parent.children = parent.children ?? [];
+        parent.children.push(menu);
+      }
+    });
+    return data.filter((menu) => !menu.parent)
   }
 
   async function addMenu(menu: MenuProps) {

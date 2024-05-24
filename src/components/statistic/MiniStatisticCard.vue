@@ -6,7 +6,7 @@
       <div class="statistic-title text-subtext text-xs">{{ title }}</div>
       <div class="statistic-content flex items-baseline">
         <span class="value text-title text-xxl font-bold">{{ value }}</span>
-        <span class="suffix ml-1 text-xs text-green-500 font-bold">+30%</span>
+<!--        <span class="suffix ml-1 text-xs text-green-500 font-bold">+30%</span>-->
       </div>
     </div>
     <div class="statistic-icon absolute bottom-0 right-0"><slot name="icon"></slot></div>

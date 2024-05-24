@@ -3,11 +3,13 @@
   import { useRouter } from 'vue-router';
 
   const router = useRouter();
+
   function signIn() {
     router.push('/login');
   }
 </script>
 <template>
+
   <div class="home text-center flex flex-col justify-center">
     <div class="transform w-full">
       <div class="tracking-wide slogan text-[3.5rem] xl:text-[5.25rem] font-extralight">
@@ -22,7 +24,10 @@
       >
         Sign In and Start Preview
         <br />
-        <div class="text-base text-subtext"><GithubFilled /> @iczer</div>
+        <div class="text-base text-subtext">
+          <GithubFilled />
+          @iczer
+        </div>
       </button>
       <br />
       <div class="inline-block text-gray-200 text-xl mr-lg">Powered by:</div>

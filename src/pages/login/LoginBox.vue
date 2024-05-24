@@ -28,7 +28,7 @@
           <a-input
             v-model:value="form.password"
             autocomplete="new-password"
-            placeholder="请输入登录密码: 888888"
+            placeholder="请输入登录密码: 123456"
             class="login-input h-[40px]"
             type="password"
           />
@@ -56,8 +56,8 @@
   const loading = ref(false);
 
   const form = reactive({
-    username: undefined,
-    password: undefined,
+    username: 'admin',
+    password: '123456',
   });
 
   const emit = defineEmits<{

@@ -107,6 +107,20 @@ const presetList = [
     cacheable: true,
     link: 'https://github.com/stepui/stepin-template',
   },
+  {
+    id: 11,
+    name: 'demo',
+    title: '样例',
+    target: '_self',
+    icon: 'LoginOutlined',
+    badge: 'test',
+    renderMenu: true,
+    path: '/demo',
+    component: '@/pages/Demo.vue',
+    parent: null,
+    permission: null,
+    cacheable: true,
+  },
 ];
 
 function getMenuList() {

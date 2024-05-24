@@ -50,15 +50,6 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/pages/Exp403.vue'),
   },
   {
-    path: '/demo',
-    name: 'demo',
-    // component: () => import('@/pages/demo')
-    meta: {
-      icon: 'LoginOutlined',
-    },
-    component: () => import('@/pages/Demo.vue'),
-  },
-  {
     path: '/:pathMatch(.*)*',
     name: '404',
     props: true,
