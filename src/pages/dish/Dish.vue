@@ -65,6 +65,7 @@
       if (res.data.code === 1) {
         tableData.value = res.data.data.records;
         counts.value = Number(res.data.data.total);
+        paginationConfig.current = page.value;
         paginationConfig.total = counts.value;
       }
     } catch (err) {
@@ -159,42 +160,46 @@
 
 <template>
   <div>
-    <a-input-search
-      v-model:value="input"
-      placeholder="搜索菜品"
-      style="margin-bottom: 16px; width: 200px"
-      @search="init"
-    />
+    <div class="flex justify-between mb-4">
+      <div class="flex space-x-2">
+        <a-input-search
+          v-model:value="input"
+          placeholder="搜索菜品"
+          style="margin-bottom: 16px; width: 200px"
+          @search="init"
+        />
 
-    <a-select
-      v-model:value="categoryId"
-      placeholder="选择分类"
-      style="margin-bottom: 16px; width: 200px"
-      @change="init"
-    >
-      <a-select-option value="">全部分类</a-select-option>
-      <a-select-option v-for="item in dishCategorys" :key="item.value" :value="item.value">
-        {{ item.label }}
-      </a-select-option>
-    </a-select>
+        <a-select
+          v-model:value="categoryId"
+          placeholder="选择分类"
+          style="margin-bottom: 16px; width: 200px"
+          @change="init"
+        >
+          <a-select-option value="">全部分类</a-select-option>
+          <a-select-option v-for="item in dishCategorys" :key="item.value" :value="item.value">
+            {{ item.label }}
+          </a-select-option>
+        </a-select>
+      </div>
+      <div class="flex space-x-2">
+        <a-button
+          type="primary"
+          style="margin-bottom: 16px"
+          @click="addDishtype('add')"
+        >
+          新建菜品
+        </a-button>
 
-    <a-button
-      type="primary"
-      style="margin-bottom: 16px"
-      @click="addDishtype('add')"
-    >
-      新建菜品
-    </a-button>
-
-    <a-button
-      type="danger"
-      style="margin-bottom: 16px; margin-left: 8px"
-      @click="deleteHandle('批量', null)"
-      :disabled="checkList.length === 0"
-    >
-      批量删除
-    </a-button>
-
+        <a-button
+          type="danger"
+          style="margin-bottom: 16px; margin-left: 8px"
+          @click="deleteHandle('批量', null)"
+          :disabled="checkList.length === 0"
+        >
+          批量删除
+        </a-button>
+      </div>
+    </div>
     <a-table
       :columns="columns"
       :dataSource="tableData"
