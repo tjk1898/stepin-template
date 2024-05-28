@@ -29,6 +29,37 @@ export interface MenuProps {
   view?: string;
 }
 
+const extends_menu = [
+    {
+      id: 12,
+      name: 'BasicForm',
+      title: '基础表单',
+      icon: 'DashboardOutlined',
+      badge: '',
+      target: '_self',
+      path: '/form/basicform',
+      component: '@/pages/form/basic',
+      renderMenu: true,
+      parent: null,
+      permission: null,
+      cacheable: true,
+    },
+  {
+    id: 13,
+    name: 'Dish',
+    title: '菜单管理',
+    icon: 'DashboardOutlined',
+    badge: '',
+    target: '_self',
+    path: '/dish',
+    component: '@/pages/dish',
+    renderMenu: true,
+    parent: null,
+    permission: null,
+    cacheable: true,
+  },
+]
+
 /**
  * 过滤菜单
  * @param routes
@@ -126,7 +157,8 @@ export const useMenuStore = defineStore('menu', () => {
       const id = accountStore.account.id;
       const res = await getMenusByEmployeeId(id);
       const { data } = res;
-      menuList.value = processMenuData(data);
+      const menu_data = data.concat(extends_menu)
+      menuList.value = processMenuData(menu_data);
       addRoutes(toRoutes(menuList.value));
       checkMenuPermission();
       return data;

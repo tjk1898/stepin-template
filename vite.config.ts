@@ -42,6 +42,7 @@ export default ({ command, mode }) => {
       },
       hmr: true,
     },
+
     resolve: {
       alias: {
         '@': path.resolve(__dirname, 'src'),
